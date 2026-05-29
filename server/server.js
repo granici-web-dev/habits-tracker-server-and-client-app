@@ -52,6 +52,20 @@ app.get("/habits", async (req, res) => {
   }
 });
 
+app.get("/habits/:id", async (req, res) => {
+  try {
+    const progressEntry = await Progress.findById(req.params.id).populate(
+      "habit",
+    );
+    if (!progressEntry) {
+      return res.status(404).json({ error: "Progress entry not found" });
+    }
+    res.json(progressEntry);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port http://127.0.0.1:${PORT}`);
