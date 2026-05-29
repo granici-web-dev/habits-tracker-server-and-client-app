@@ -43,6 +43,15 @@ app.post("/habits", async (req, res) => {
   }
 });
 
+app.get("/habits", async (req, res) => {
+  try {
+    const progressEntries = await Progress.find().populate("habit");
+    res.json(progressEntries);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port http://127.0.0.1:${PORT}`);
