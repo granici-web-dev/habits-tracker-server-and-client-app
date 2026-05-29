@@ -66,6 +66,35 @@ app.get("/habits/:id", async (req, res) => {
   }
 });
 
+app.put("/habits/:id", async (req, res) => {
+  try {
+    const { habitId, date, completed, notes, mood } = req.body;
+    const progressEntry = await Progress.findByIdAndUpdate(
+      req.params.id,
+      { habit: habitId, date, completed, notes, mood },
+      { new: true },
+    );
+    if (!progressEntry) {
+      return res.status(404).json({ error: "Progress entry not found" });
+    }
+    res.json(progressEntry);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.delete("/habits/:id", async (req, res) => {
+  try {
+    const progressEntry = await Progress.findByIdAndDelete(req.params.id);
+    if (!progressEntry) {
+      return res.status(404).json({ error: "Progress entry not found" });
+    }
+    res.json({ message: "Progress entry deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port http://127.0.0.1:${PORT}`);
